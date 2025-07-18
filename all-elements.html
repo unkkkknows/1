@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>All Elements - Periodic Table</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-header">
+    <h1>🧪 Periodic Table of Elements</h1>
+    <input type="text" id="searchInput" placeholder="Search element..." />
+    <a href="index.html" class="back-btn">⬅ Back</a>
+  </div>
+
+  <div id="tableContainer" class="table-container">
+    <!-- Elements will be injected here -->
+  </div>
+
+  <!-- Popup -->
+  <div id="popup" class="popup hidden">
+    <div class="popup-content">
+      <span id="closeBtn" class="close-btn">×</span>
+      <h2 id="popupName"></h2>
+      <p><strong>Symbol:</strong> <span id="popupSymbol"></span></p>
+      <p><strong>Atomic Number:</strong> <span id="popupNumber"></span></p>
+      <p><strong>Atomic Mass:</strong> <span id="popupMass"></span></p>
+      <p><strong>Category:</strong> <span id="popupCategory"></span></p>
+    </div>
+  </div>
+
+  <script>
+    async function loadElements() {
+      try {
+        const response = await fetch('./data/elements.json');
+        const elements = await response.json();
+
+        renderTable(elements);
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+          const query = this.value.toLowerCase();
+          const filtered = elements.filter(el =>
+            el.name.toLowerCase().includes(query) ||
+            el.symbol.toLowerCase().includes(query) ||
+            el.number.toString().includes(query)
+          );
+          renderTable(filtered);
+        });
+
+        function renderTable(data) {
+          const container = document.getElementById("tableContainer");
+          container.innerHTML = "";
+          const grid = document.createElement("div");
+          grid.className = "periodic-grid";
+
+          data.forEach(el => {
+            const item = document.createElement("div");
+            item.className = "element-box " + el.category;
+            item.style.gridColumn = el.xpos;
+            item.style.gridRow = el.ypos;
+            item.innerHTML = `<strong>${el.symbol}</strong><small>${el.number}</small>`;
+            item.onclick = () => showPopup(el);
+            grid.appendChild(item);
+          });
+
+          container.appendChild(grid);
+        }
+
+        function showPopup(el) {
+          document.getElementById("popupName").textContent = el.name;
+          document.getElementById("popupSymbol").textContent = el.symbol;
+          document.getElementById("popupNumber").textContent = el.number;
+          document.getElementById("popupMass").textContent = el.mass;
+          document.getElementById("popupCategory").textContent = el.category;
+          document.getElementById("popup").classList.remove("hidden");
+        }
+
+        document.getElementById("closeBtn").onclick = () => {
+          document.getElementById("popup").classList.add("hidden");
+        };
+
+      } catch (err) {
+        alert("Failed to load elements data.");
+        console.error(err);
+      }
+    }
+
+    loadElements();
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Asking Mode - Periodic Table</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-header">
+    <h1>❓ Asking Mode</h1>
+    <input type="text" id="askInput" placeholder="Enter element name, symbol or number..." />
+    <a href="index.html" class="back-btn">⬅ Back</a>
+  </div>
+
+  <div id="resultCard" class="popup hidden">
+    <div class="popup-content">
+      <span id="askCloseBtn" class="close-btn">×</span>
+      <h2 id="resultName"></h2>
+      <p><strong>Symbol:</strong> <span id="resultSymbol"></span></p>
+      <p><strong>Atomic Number:</strong> <span id="resultNumber"></span></p>
+      <p><strong>Atomic Mass:</strong> <span id="resultMass"></span></p>
+      <p><strong>Category:</strong> <span id="resultCategory"></span></p>
+    </div>
+  </div>
+
+  <script>
+    async function loadAskMode() {
+      try {
+        const response = await fetch('./data/elements.json');
+        const elements = await response.json();
+
+        const input = document.getElementById("askInput");
+        const resultCard = document.getElementById("resultCard");
+
+        input.addEventListener("input", () => {
+          const query = input.value.toLowerCase().trim();
+
+          if (query.length === 0) {
+            resultCard.classList.add("hidden");
+            return;
+          }
+
+          const found = elements.find(el =>
+            el.name.toLowerCase() === query ||
+            el.symbol.toLowerCase() === query ||
+            el.number.toString() === query
+          );
+
+          if (found) {
+            document.getElementById("resultName").textContent = found.name;
+            document.getElementById("resultSymbol").textContent = found.symbol;
+            document.getElementById("resultNumber").textContent = found.number;
+            document.getElementById("resultMass").textContent = found.mass;
+            document.getElementById("resultCategory").textContent = found.category;
+            resultCard.classList.remove("hidden");
+          } else {
+            resultCard.classList.add("hidden");
+          }
+        });
+
+        document.getElementById("askCloseBtn").onclick = () => {
+          resultCard.classList.add("hidden");
+        };
+
+      } catch (err) {
+        alert("Failed to load elements data.");
+        console.error(err);
+      }
+    }
+
+    loadAskMode();
+  </script>
+</body>
+</html>

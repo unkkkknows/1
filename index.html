@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Periodic Table</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Landscape Mode Warning -->
+  <div id="rotate-warning">
+    <h2>Please rotate your device to landscape mode for the best experience.</h2>
+  </div>
+
+  <main class="home-container">
+    <h1>🧪 Periodic Table Explorer</h1>
+    <a href="all-elements.html" class="btn">🔬 All Elements</a>
+    <a href="ask-mode.html" class="btn">❓ Asking Mode</a>
+  </main>
+
+  <script>
+    function checkOrientation() {
+      const warning = document.getElementById('rotate-warning');
+      if(window.innerHeight > window.innerWidth) {
+        warning.style.display = 'flex';
+      } else {
+        warning.style.display = 'none';
+      }
+    }
+    window.addEventListener('load', checkOrientation);
+    window.addEventListener('resize', checkOrientation);
+  </script>
+</body>
+</html>
